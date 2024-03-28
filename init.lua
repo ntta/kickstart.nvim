@@ -647,11 +647,11 @@ require('lazy').setup({
     'sainnhe/gruvbox-material',
     priority = 1000,
     init = function()
+      vim.opt.background = 'dark'
       vim.opt.termguicolors = true
-      vim.cmd.colorscheme 'gruvbox-material'
       vim.g.gruvbox_material_background = 'hard'
       vim.g.gruvbox_material_better_performance = 1
-      vim.opt.background = 'dark'
+      vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
 
@@ -726,25 +726,37 @@ require('lazy').setup({
     end,
   },
 
-  -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { 'github/copilot.vim' },
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      local copilot = function()
+        local has_lsp = vim.lsp.get_active_clients({ name = 'copilot' })[1]
+        if not has_lsp then
+          return ' '
+        end
+        return ' '
+      end
+      require('lualine').setup {
+        options = {
+          icons_enabled = true,
+          theme = 'gruvbox-material',
+        },
+        sections = {
+          lualine_a = {
+            'mode',
+            {
+              'searchcount',
+              maxcount = 999,
+              timeout = 500,
+            },
+          },
+          lualine_x = { 'encoding', copilot, 'filetype' },
+        },
+      }
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
